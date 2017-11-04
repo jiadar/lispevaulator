@@ -1,0 +1,7 @@
+#!/bin/bash
+PROJ_PATH=/Users/ross/work/brian/lispevaulator
+pushd $PROJ_PATH 
+javac $PROJ_PATH/src/PJ2/*.java -d bin/PJ2
+java -cp $PROJ_PATH/bin/PJ2:$PROJ_PATH/bin PJ2.LispExprEvaluator
+popd 
+
