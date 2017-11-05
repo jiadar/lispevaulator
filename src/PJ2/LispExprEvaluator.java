@@ -95,17 +95,6 @@ public class LispExprEvaluator {
       computeStack = new Stack<Double>();
    }
 
-
-
-   // This function evaluates current operator with its operands
-   // See complete algorithm in evaluate()
-   //
-   // Main Steps:
-   // 		Pop operands from exprStack and push them onto 
-   // 			computeStack until you find an operator
-   //  	Apply the operator to the operands on computeStack
-   //          Push the result into exprStack
-   //
    private void evaluateCurrentOperation()
    {
       String op = exprStack.pop().toString();
@@ -131,7 +120,6 @@ public class LispExprEvaluator {
       }
 
       while (! computeStack.isEmpty()) {
-         //         System.out.println("computeStack: " + computeStack.toString() + ", op: " + op);
          switch (op) {
          case "+":
             result = result + computeStack.pop();
@@ -170,59 +158,35 @@ public class LispExprEvaluator {
     */
    public double evaluate()
    {
-      // use scanner to tokenize currentExpr
       Scanner currentExprScanner = new Scanner(currentExpr);
-        
-      // Use zero or more white space as delimiter,
-      // which breaks the string into single character tokens
       currentExprScanner = currentExprScanner.useDelimiter("\\s*");
 
-      // Step 1: Scan the tokens in the string.
-      while (currentExprScanner.hasNext())
-         {
-		
-            // Step 2: If you see an operand, push operand object onto the exprStack
-            if (currentExprScanner.hasNextInt())
-               {
-                  // This force scanner to grab all of the digits
-                  // Otherwise, it will just get one char
-                  String dataString = currentExprScanner.findInLine("\\d+");
-                  exprStack.push(dataString);
-               }
-            else
-               {
-                  // Get next token, only one char in string token
-                  String aToken = currentExprScanner.next();
-                  char item = aToken.charAt(0);
-                
-                  switch (item)
-                     {
-                        // Step 3: If you see "(", next token shoube an operator
-                     case '(':
-                        String opstr = currentExprScanner.next();
-                        char op = opstr.charAt(0);
-                        //                   System.out.println("after ( exprStack: " + exprStack.toString());
-                        exprStack.push(op);
-                        break;
-                     case ')':
-                        evaluateCurrentOperation();
-                        break;
-                     default:
-                        throw new LispExprEvaluatorException(item + " is not a legal expression operator");
-                     } 
-               } 
+      while (currentExprScanner.hasNext()) {
+         if (currentExprScanner.hasNextInt()) {
+            String dataString = currentExprScanner.findInLine("\\d+");
+            exprStack.push(dataString);
+         }
+         else {  
+            String aToken = currentExprScanner.next();
+            char item = aToken.charAt(0);
+            
+            switch (item) {
+            case '(':
+               String opstr = currentExprScanner.next();
+               char op = opstr.charAt(0);
+               exprStack.push(op);
+               break;
+            case ')':
+               evaluateCurrentOperation();
+               break;
+            default:
+               throw new LispExprEvaluatorException(item + " is not a legal expression operator");
+            } 
          } 
-        
-      // Step 9: If you run out of tokens, the value on the top of exprStack is
-      //         is the result of the expression.
-      //         return result
+      } 
 
-      Double result = 0.0;
-
-      if (exprStack.isEmpty()) throw new LispExprEvaluatorException("must have numbers in expression");
-          
-      result = Double.parseDouble(exprStack.pop().toString());
-      return result;  // change this statement
+      if (exprStack.isEmpty()) throw new LispExprEvaluatorException("must have numbers in expression");          
+      return Double.parseDouble(exprStack.pop().toString());
    }
 
    //=============================================================
