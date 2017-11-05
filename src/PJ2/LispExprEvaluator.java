@@ -112,13 +112,8 @@ public class LispExprEvaluator {
       while (op.compareTo("-")!=0 && op.compareTo("+")!=0 && op.compareTo("*")!=0 && op.compareTo("/")!=0) {
          Double d = Double.parseDouble(op);
          computeStack.push(d);
-         // would be better to check for empty stack here than wrap in try/catch
-         try {
-            op = exprStack.pop().toString();
-         }
-         catch (EmptyStackException e) {
-            throw new LispExprEvaluatorException("invalid expression");
-         }
+         if (exprStack.isEmpty()) throw new LispExprEvaluatorException("invalid expression");
+         op = exprStack.pop().toString();
       }
 
       if (computeStack.isEmpty()) {
@@ -224,13 +219,9 @@ public class LispExprEvaluator {
 
       Double result = 0.0;
 
-      // would be better to check for empty stack here than wrap in try/catch
-      try {
-         result = Double.parseDouble(exprStack.pop().toString());
-      }
-      catch (EmptyStackException e) {
-         throw new LispExprEvaluatorException("must have numbers in expression");
-      }
+      if (exprStack.isEmpty()) throw new LispExprEvaluatorException("must have numbers in expression");
+          
+      result = Double.parseDouble(exprStack.pop().toString());
       return result;  // change this statement
    }
 
