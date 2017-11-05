@@ -122,6 +122,8 @@ public class LispExprEvaluator {
       }
 
       if (computeStack.isEmpty()) {
+         if (op.contains("*")) exprStack.push("1");
+         if (op.contains("-")) throw new LispExprEvaluatorException("- and / must have at least 1 operand");
          return;
       }
 
@@ -130,10 +132,11 @@ public class LispExprEvaluator {
       if (computeStack.isEmpty()) {
          if (op.contains("-")) result = -1.0 * result;
          if (op.contains("/")) result = 1.0 / result;
+         if (op.contains("*")) result = 1.0 * result;
       }
 
       while (! computeStack.isEmpty()) {
-         System.out.println("computeStack: " + computeStack.toString() + ", op: " + op);
+         //         System.out.println("computeStack: " + computeStack.toString() + ", op: " + op);
          switch (op) {
          case "+":
             result = result + computeStack.pop();
